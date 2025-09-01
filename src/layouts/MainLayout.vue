@@ -1,81 +1,58 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hhh lpR fFf">
+
+    <q-header reveal elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn dense flat round icon="menu" @click="isDrawerOpen = !isDrawerOpen" />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title>
+          <div class="text-h6 font-sm">
+            {{ appName }}
+          </div>
+        </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Essential Links </q-item-label>
-
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+    <q-drawer show-if-above v-model="isDrawerOpen" side="left" bordered>
+      <q-list class="q-mt-sm">
+        <nav-drawer-item to="staff/dashboard" icon-name="dashboard" label="Dashboard" />
+        <nav-drawer-item to="plates" icon-name="tag" label="Plates" />
+        <nav-drawer-item to="staff/plate-requests" icon-name="book" label="Plate Requests" />
+        <nav-drawer-item to="staff/csr-submissions" icon-name="menu_book" label="CSR Submissions" />
+        <nav-drawer-item to="staff/lrs-submissions" icon-name="menu_book" label="LRS Submissions" />
+        <nav-drawer-item to="insights" icon-name="analytics" label="Insight Reports" />
+      </q-list>
+      <q-list class="q-mt-sm">
+        <nav-drawer-item to="surveyor/dashboard" icon-name="dashboard" label="Dashboard" />
+        <nav-drawer-item to="surveyor/plate-requests" icon-name="book" label="Plate Requests" />
+        <nav-drawer-item to="surveyor/csr-submissions" icon-name="menu_book" label="CSR Submissions" />
+        <nav-drawer-item to="surveyor/lrs-submissions" icon-name="menu_book" label="LRS Submissions" />
+      </q-list>
+      <q-list class="q-mt-sm">
+        <nav-drawer-item to="admin/dashboard" icon-name="dashboard" label="Dashboard" />
+        <nav-drawer-item to="roles" icon-name="shield" label="Roles" />
       </q-list>
     </q-drawer>
 
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer class="bg-grey-8 text-white">
+      <q-toolbar>
+        <q-toolbar-title>
+          <div class="text-h6">{{ appName }}</div>
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
+
   </q-layout>
 </template>
 
 <script setup lang="ts">
+import NavDrawerItem from 'src/components/NavDrawerItem.vue';
 import { ref } from 'vue';
-import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
 
-const linksList: EssentialLinkProps[] = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
-
-const leftDrawerOpen = ref(false);
-
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
+const isDrawerOpen = ref(false);
+const appName = import.meta.env.VITE_APP_NAME
 </script>
