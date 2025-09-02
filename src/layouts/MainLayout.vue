@@ -10,6 +10,15 @@
             {{ appName }}
           </div>
         </q-toolbar-title>
+
+        <q-btn-dropdown flat icon="person" label="Username" no-caps split align="evenly">
+          <div class="q-py-sm">
+            <q-list>
+              <nav-dropdown-item icon-name="manage_accounts" label="Account Settings" />
+              <nav-dropdown-item icon-name="logout" icon-color="negative" label="Logout" label-class="text-negative" />
+            </q-list>
+          </div>
+        </q-btn-dropdown>
       </q-toolbar>
     </q-header>
 
@@ -17,14 +26,14 @@
       <q-list class="q-mt-sm">
         <nav-drawer-item to="staff/dashboard" icon-name="dashboard" label="Dashboard" />
         <nav-drawer-item to="plates" icon-name="tag" label="Plates" />
-        <nav-drawer-item to="staff/plate-requests" icon-name="book" label="Plate Requests" />
+        <nav-drawer-item to="staff/plate-requests" icon-name="article" label="Plate Requests" />
         <nav-drawer-item to="staff/csr-submissions" icon-name="menu_book" label="CSR Submissions" />
         <nav-drawer-item to="staff/lrs-submissions" icon-name="menu_book" label="LRS Submissions" />
-        <nav-drawer-item to="insights" icon-name="analytics" label="Insight Reports" />
+        <nav-drawer-item to="analytics" icon-name="analytics" label="Analytics" />
       </q-list>
       <q-list class="q-mt-sm">
         <nav-drawer-item to="surveyor/dashboard" icon-name="dashboard" label="Dashboard" />
-        <nav-drawer-item to="surveyor/plate-requests" icon-name="book" label="Plate Requests" />
+        <nav-drawer-item to="surveyor/plate-requests" icon-name="article" label="Plate Requests" />
         <nav-drawer-item to="surveyor/csr-submissions" icon-name="menu_book" label="CSR Submissions" />
         <nav-drawer-item to="surveyor/lrs-submissions" icon-name="menu_book" label="LRS Submissions" />
       </q-list>
@@ -51,6 +60,7 @@
 
 <script setup lang="ts">
 import NavDrawerItem from 'src/components/NavDrawerItem.vue';
+import NavDropdownItem from 'src/components/NavDropdownItem.vue';
 import { ref } from 'vue';
 
 const isDrawerOpen = ref(false);
