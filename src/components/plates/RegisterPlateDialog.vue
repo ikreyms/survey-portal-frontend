@@ -7,13 +7,17 @@
       <q-separator />
       <q-card-section>
         <q-select
-          class="q-mb-lg"
+          class="q-mb-md"
           v-model="format"
-          :options="formats"
+          :options="formatsUI"
           label="Format"
           option-value="id"
           option-label="name"
         />
+
+        <q-banner dense rounded class="q-mb-lg bg-blue-2">
+          {{ `Selected Format: ${format?.format}` }}
+        </q-banner>
 
         <div class="column q-mb-md">
           <div class="text-subtitle2">Select PSM number range(s) to register</div>
@@ -26,7 +30,7 @@
         <div class="column q-gutter-y-md q-mb-md">
           <q-card v-for="range in format?.ranges" :key="range.name" class="q-pa-sm q-pb-lg">
             <div class="row items-center justify-between" :style="{ marginBottom: range.inputType === 'slide' ? '32px' : '0px' }">
-              <q-checkbox :label="range.name" v-model="range.checked"></q-checkbox>
+              <q-checkbox :label="range.name" v-model="range.selected"></q-checkbox>
               <q-btn
                 outline
                 no-caps
@@ -43,20 +47,20 @@
             <div v-if="range.inputType === 'slide'">
               <div class="q-px-md q-mb-sm row items-center">
                 <q-range left-label-color="primary" left-thumb-color="primary" right-label-color="info"
-                  right-thumb-color="info" :disable="!range.checked" v-model="range.current" :min="range.min"
-                  :max="range.max" label-always />
+                  right-thumb-color="info" :disable="!range.selected" v-model="range.current" :min="range.available.min"
+                  :max="range.available.max" label-always />
               </div>
               <div class="q-px-sm row items-center justify-between">
                 <q-btn-group outline>
-                  <q-btn outline size="xs" :disable="!range.checked" color="primary" icon="remove"
+                  <q-btn outline size="xs" :disable="!range.selected" color="primary" icon="remove"
                     @click="handleLowerBoundDecrement(range)" />
-                  <q-btn outline size="xs" :disable="!range.checked" color="primary" icon="add"
+                  <q-btn outline size="xs" :disable="!range.selected" color="primary" icon="add"
                     @click="handleLowerBoundIncrement(range)" />
                 </q-btn-group>
                 <q-btn-group outline>
-                  <q-btn outline size="xs" :disable="!range.checked" color="info" icon="remove"
+                  <q-btn outline size="xs" :disable="!range.selected" color="info" icon="remove"
                     @click="handleUpperBoundDecrement(range)" />
-                  <q-btn outline size="xs" :disable="!range.checked" color="info" icon="add"
+                  <q-btn outline size="xs" :disable="!range.selected" color="info" icon="add"
                     @click="handleUpperBoundIncrement(range)" />
                 </q-btn-group>
               </div>
@@ -65,7 +69,7 @@
               <q-input
                 class="col"
                 type="number"
-                :disable="!range.checked"
+                :disable="!range.selected"
                 v-model.number="range.current.min"
                 label="Lower Bound"
                 :error="!!range.minError"
@@ -74,7 +78,7 @@
                 <q-input
                 class="col"
                 type="number"
-                :disable="!range.checked"
+                :disable="!range.selected"
                 v-model.number="range.current.max"
                 label="Upper Bound"
                 :error="!!range.maxError"
@@ -90,17 +94,17 @@
         <q-btn flat label="Register" color="primary" @click="register" />
       </q-card-actions>
     </q-card>
-    {{ format }}
   </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { formats } from './data';
 import type { PlateNumberFormatUI, PlateRange, PlateRangeUI } from './RegisterPlateDialog.types';
 
 const isDialogOpen = ref(false);
-const formatsUI = ref<PlateNumberFormatUI[] | null>(null);
+const formatsUI = ref<PlateNumberFormatUI[]>([]);
+// defult format is selected onMounted
 const format = ref<PlateNumberFormatUI | null>(null);
 
 const toggleRangeInputType = (range: PlateRangeUI) => {
@@ -108,22 +112,22 @@ const toggleRangeInputType = (range: PlateRangeUI) => {
 }
 
 const handleLowerBoundDecrement = (range: PlateRangeUI) => {
-  if (range.current.min <= range.min) return;
+  if (range.current.min <= range.available.min) return;
   range.current.min--;
 }
 
 const handleLowerBoundIncrement = (range: PlateRangeUI) => {
-  if (range.current.min >= range.max) return;
+  if (range.current.min >= range.available.max) return;
   range.current.min++;
 }
 
 const handleUpperBoundDecrement = (range: PlateRangeUI) => {
-  if (range.current.max <= range.min) return;
+  if (range.current.max <= range.available.min) return;
   range.current.max--;
 }
 
 const handleUpperBoundIncrement = (range: PlateRangeUI) => {
-  if (range.current.max >= range.max) return;
+  if (range.current.max >= range.available.max) return;
   range.current.max++;
 }
 
@@ -136,11 +140,11 @@ const validateRange = (range: PlateRangeUI) => {
   let minError: string | null = null;
   let maxError: string | null = null;
 
-  if (range.current.min < range.min) minError = `Lower bound cannot be below ${range.min}`;
-  else if (range.current.min > range.max) minError = `Lower bound cannot be above ${range.max}`;
+  if (range.current.min < range.available.min) minError = `Lower bound cannot be below ${range.available.min}`;
+  else if (range.current.min > range.available.max) minError = `Lower bound cannot be above ${range.available.max}`;
 
-  if (range.current.max < range.min) maxError = `Upper bound cannot be below ${range.min}`;
-  else if (range.current.max > range.max) maxError = `Upper bound cannot be above maximum ${range.max}`;
+  if (range.current.max < range.available.min) maxError = `Upper bound cannot be below ${range.available.min}`;
+  else if (range.current.max > range.available.max) maxError = `Upper bound cannot be above ${range.available.max}`;
 
   if (range.current.min > range.current.max) minError = maxError = 'Lower bound cannot be above upper bound';
 
@@ -153,10 +157,10 @@ const validateRange = (range: PlateRangeUI) => {
 const register = () => {
   const selectedRanges: PlateRange[] = [];
   format.value?.ranges.forEach(r => {
-    if (r.checked) {
+    if (r.selected) {
       if (!validateRange(r)) return;
       const newRange = { ...r };
-      delete newRange.checked;
+      delete newRange.selected;
       delete newRange.inputType;
       delete newRange.minError;
       delete newRange.maxError;
@@ -183,15 +187,15 @@ const props = withDefaults(defineProps<RegisterPlateDialogProps>(), {
 });
 
 watch(() => props.isOpen, (newVal) => {
-  isDialogOpen.value = newVal
+  isDialogOpen.value = newVal;
+  if (newVal) {
+    formatsUI.value = formats.value.map(f => ({ 
+      ...f, ranges: f.ranges.map(r => ({
+        ...r, selected: false, inputType: 'slide', minError: null, maxError: null
+      })
+    )}));
+    format.value = formatsUI.value[0] ?? null;
+    console.log('Formats loaded:', formatsUI.value);
+  }
 });
-
-onMounted(() => {
-  formatsUI.value = formats.value.map(f => ({ 
-    ...f, ranges: f.ranges.map(r => ({
-      ...r, checked: false, inputType: 'slide' 
-    })
-  )}));
-  format.value = formatsUI.value[0] ?? null;
-})
 </script>
