@@ -15,7 +15,6 @@ export const formats = ref<PlateNumberFormatUI[]>([
           min: 1000,
           max: 4999,
         },
-        checked: false
       },
       {
         name: 'tourism',

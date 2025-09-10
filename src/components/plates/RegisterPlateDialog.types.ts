@@ -1,8 +1,15 @@
+export interface PlateNumberFormat {
+  id: number
+  name: string
+  format: string
+  ranges: Array<PlateRange>
+}
+
 export interface PlateNumberFormatUI {
   id: number
   name: string
   format: string
-  ranges: PlateRangeUI[]
+  ranges: Array<PlateRangeUI>
 }
 
 export interface PlateRange {

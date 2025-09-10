@@ -24,7 +24,7 @@
         </div>
 
         <div class="column q-gutter-y-md q-mb-md">
-          <q-card v-for="range in formatsUI?.ranges" :key="range.name" class="q-pa-sm q-pb-lg">
+          <q-card v-for="range in format?.ranges" :key="range.name" class="q-pa-sm q-pb-lg">
             <div class="row items-center justify-between" :style="{ marginBottom: range.inputType === 'slide' ? '32px' : '0px' }">
               <q-checkbox :label="range.name" v-model="range.checked"></q-checkbox>
               <q-btn
@@ -100,8 +100,8 @@ import { formats } from './data';
 import type { PlateNumberFormatUI, PlateRange, PlateRangeUI } from './RegisterPlateDialog.types';
 
 const isDialogOpen = ref(false);
-const format = ref(formats.value[0])
 const formatsUI = ref<PlateNumberFormatUI[] | null>(null);
+const format = ref<PlateNumberFormatUI | null>(null);
 
 const toggleRangeInputType = (range: PlateRangeUI) => {
   range.inputType = range.inputType === 'slide' ? 'text' : 'slide';
@@ -136,11 +136,11 @@ const validateRange = (range: PlateRangeUI) => {
   let minError: string | null = null;
   let maxError: string | null = null;
 
-  if (range.current.min < range.min) minError = 'Lower bound cannot be below minimum';
-  else if (range.current.min > range.max) minError = 'Lower bound cannot be above maximum';
+  if (range.current.min < range.min) minError = `Lower bound cannot be below ${range.min}`;
+  else if (range.current.min > range.max) minError = `Lower bound cannot be above ${range.max}`;
 
-  if (range.current.max < range.min) maxError = 'Upper bound cannot be below minimum';
-  else if (range.current.max > range.max) maxError = 'Upper bound cannot be above maximum';
+  if (range.current.max < range.min) maxError = `Upper bound cannot be below ${range.min}`;
+  else if (range.current.max > range.max) maxError = `Upper bound cannot be above maximum ${range.max}`;
 
   if (range.current.min > range.current.max) minError = maxError = 'Lower bound cannot be above upper bound';
 
@@ -187,15 +187,11 @@ watch(() => props.isOpen, (newVal) => {
 });
 
 onMounted(() => {
-  formatsUI.value = formats.value.map(f => ({
-    ...f,
-    ranges: f.ranges.map(r => ({
-      ...r,
-      checked: false,
-      inputType: 'slide',
-      minError: null,
-      maxError: null,
-    }))
-  }));
+  formatsUI.value = formats.value.map(f => ({ 
+    ...f, ranges: f.ranges.map(r => ({
+      ...r, checked: false, inputType: 'slide' 
+    })
+  )}));
+  format.value = formatsUI.value[0] ?? null;
 })
 </script>
