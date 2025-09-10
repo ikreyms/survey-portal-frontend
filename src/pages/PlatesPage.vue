@@ -8,27 +8,23 @@
     </div>
     <q-separator spaced/>
     <q-page-sticky v-if="isScreenLtMd" position="bottom-right" :offset="[18, 18]">
-      <q-btn size="lg" round outline color="primary" icon="add"/>
+      <!-- <q-btn size="lg" round outline color="primary" icon="add" @click="showDialog = true"/> -->
+      <q-btn size="lg" round outline color="primary" icon="add" @click="showDialog = true"/>
     </q-page-sticky>
   </q-page>
 
   <register-plate-dialog
     :is-open="showDialog"
-    :range-min="minRange"
-    :range-max="maxRange"
     @cancel="showDialog = false"
   />
 </template>
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import RegisterPlateDialog from 'src/components/RegisterPlateDialog.vue';
-import { computed, ref } from 'vue';
+import RegisterPlateDialog from 'src/components/plates/RegisterPlateDialog.vue';
+import { ref, computed } from 'vue';
 
-const q = useQuasar()
-
-const minRange = 1200;
-const maxRange = 1600;
+const q = useQuasar();
 
 const showDialog = ref(false);
 

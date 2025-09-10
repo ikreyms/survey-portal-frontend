@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import NavDrawerItem from 'src/components/Nav/NavDrawerItem.vue';
+import NavDrawerItem from 'src/components/nav/NavDrawerItem.vue';
 import { ref } from 'vue';
 
 const isDrawerOpen = ref(true);
