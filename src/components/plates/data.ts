@@ -9,7 +9,7 @@ export const formats = ref<PlateNumberFormatUI[]>([
     ranges: [
       {
         name: 'local',
-        fullRange: {
+        defined: {
           min: 1000,
           max: 4999,
         },
@@ -17,14 +17,18 @@ export const formats = ref<PlateNumberFormatUI[]>([
           min: 1000,
           max: 4999,
         },
-        current: {
+        selectedRange: {
           min: 1000,
-          max: 4999,
+          max: 1300,
         },
+        thresholds: {
+          warning: 50,
+          critical: 20,
+        }
       },
       {
         name: 'tourism',
-        fullRange: {
+        defined: {
           min: 5000,
           max: 9999,
         },
@@ -32,10 +36,14 @@ export const formats = ref<PlateNumberFormatUI[]>([
           min: 5000,
           max: 9999,
         },
-        current: {
+        selectedRange: {
           min: 5000,
           max: 5300,
         },
+        thresholds: {
+          warning: 50,
+          critical: 20,
+        }
       }
     ]
   },
@@ -46,7 +54,7 @@ export const formats = ref<PlateNumberFormatUI[]>([
     ranges: [
       {
         name: 'default',
-        fullRange: {
+        defined: {
           min: 10000,
           max: 19999,
         },
@@ -54,10 +62,14 @@ export const formats = ref<PlateNumberFormatUI[]>([
           min: 10000,
           max: 19999,
         },
-        current: {
+        selectedRange: {
           min: 10000,
           max: 10300,
         },
+        thresholds: {
+          warning: 50,
+          critical: 20,
+        }
       }
     ]
   }

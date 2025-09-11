@@ -40,33 +40,32 @@ export interface PlateNumberFormatUI {
 export interface PlateRange {
   /** Descriptive name of the range (e.g., "Main Range") */
   name: string;
-  
-  /** Entire range for the plate number format */
-  fullRange: {
-    /** Minimum value of the full range */
-    min: number;
 
-    /** Maximum value of the full range */
-    max: number;
-  }
+  /** The defined range for the plate number format */
+  defined: RangeBounds;
 
   /** Available range from the entire range for the plate number format */
-  available: {
-    /** Minimum value of the available range */
-    min: number;
-  
-    /** Maximum value of the available range */
-    max: number;
-  }
+  available: RangeBounds;
 
   /** Currently used subrange within the min-max bounds */
-  current: {
-    /** Current minimum value in use */
-    min: number;
+  selectedRange: RangeBounds;
 
-    /** Current maximum value in use */
-    max: number;
-  };
+  /** Thresholds for triggering availability warnings */
+  thresholds: {
+    /** Warning threshold for available numbers in this range */
+    warning: number;
+
+    /** Critical threshold for available numbers in this range */
+    critical: number;
+  }
+}
+
+export interface RangeBounds {
+  /** Minimum bound of range */
+  min: number;
+
+  /** Maximum bound of range */
+  max: number
 }
 
 /**
@@ -75,7 +74,7 @@ export interface PlateRange {
  */
 export interface PlateRangeUI extends PlateRange {
   /** Optional flag indicating if the range is selected or active in the UI */
-  selected?: boolean;
+  isSelected?: boolean;
 
   /** Type of input UI for the range: either text input or slider */
   inputType?: 'text' | 'slide';
