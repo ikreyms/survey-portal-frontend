@@ -7,17 +7,13 @@
       <q-separator />
       <q-card-section>
         <q-select
-          class="q-mb-md"
+          class="q-mb-lg"
           v-model="format"
           :options="formatsUI"
           label="Format"
           option-value="id"
           option-label="name"
         />
-
-        <q-banner dense rounded class="q-mb-lg bg-blue-2">
-          {{ `Selected Format: ${format?.format}` }}
-        </q-banner>
 
         <div class="column q-mb-md">
           <div class="text-subtitle2">Select PSM number range(s) to register</div>
